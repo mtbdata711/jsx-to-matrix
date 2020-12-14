@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "babel src -d dist",
-    "start": "node -r esm dist"
+    "start": "node -r esm dist",
+    "postinstall": "link-module-alias"
+  },
+  "_moduleAliases": {
+    "@jsx-runtime": "./runtime"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +20,8 @@
     "@babel/plugin-transform-react-jsx": "^7.12.10",
     "esm": "^3.2.25",
     "jsdom": "^16.4.0"
+  },
+  "devDependencies": {
+    "link-module-alias": "^1.2.0"
   }
 }

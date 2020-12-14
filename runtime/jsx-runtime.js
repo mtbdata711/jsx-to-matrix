@@ -1,5 +1,3 @@
-import { MatrixTypes } from "../lib/types";
-
 function jsx(type, config) {
     if (typeof type === "function") {
       return type(config);
@@ -30,21 +28,32 @@ function jsx(type, config) {
 
 
   function render(element, container) {
-
-  if( MatrixTypes.hasOwnProperty( element.type ) ){
-    return MatrixTypes[element.type]( element, container );
-  }
+    if( element.type === undefined ){
+      element.forEach( child => render(child, container ) );
+      return container;
+    }
 
     const dom = element.type === "TEXT_ELEMENT" ? container.ownerDocument.createTextNode("") : container.ownerDocument.createElement( element.type );
+
     Object.keys(element.props)
       .filter(key => key !== "children")
       .forEach((name) => {
         dom[name] = element.props[name];
       });
 
-    element.props.children.forEach((child) => render(child, dom));
+    if( element.props.hasOwnProperty("children")){
+      element.props.children.forEach((child) => render(child, dom));
+    }
+    
     
     container.appendChild(dom);
   }
 
-  export { jsx, render, jsx as jsxs };
+  function Fragment({ children } ){
+    if( ! Array.isArray( children ) ){
+      children = [ children ];
+    }
+    return children.map( child => typeof child === "object" ? child : createTextElement(child) );
+  }
+
+  export { jsx, render, jsx as jsxs, Fragment };
